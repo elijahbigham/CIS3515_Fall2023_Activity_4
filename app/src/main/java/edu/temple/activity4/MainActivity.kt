@@ -20,22 +20,33 @@ class MainActivity : AppCompatActivity() {
         textSizeSelector = findViewById(R.id.textSizeSelectorRecyclerView)
         textSizeDisplay = findViewById((R.id.textSizeDisplayTextView))
 
+
+
+        val callback = {textSize: Float -> textSizeDisplay.textSize = textSize}
         // Trying to create array of integers that are multiples of 5
         // Verify correctness by examining array values.
         val textSizes = Array(20){(it + 1) * 5}
 
-        textSizeSelector.adapter = TextSizeAdapter(textSizes)
+        textSizeSelector.adapter = TextSizeAdapter(textSizes){
+            textSizeDisplay.textSize = it
+
+        }
         textSizeSelector.layoutManager = LinearLayoutManager(this)
     }
 }
 
 
 /* Convert to RecyclerView.Adapter */
-class TextSizeAdapter(_textSizes: Array<Int>) : RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
+class TextSizeAdapter(_textSizes: Array<Int>, _callback: (Float) -> Unit) : RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
 
     val textSizes = _textSizes
-    class TextSizeViewHolder(view: TextView) : RecyclerView.ViewHolder (view) {
+    val callback = _callback
+    inner class TextSizeViewHolder(view: TextView) : RecyclerView.ViewHolder (view) {
         val textView = view
+
+        init {
+            textView.setOnClickListener { callback(textSizes[adapterPosition].toFloat()) }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextSizeViewHolder {
@@ -47,8 +58,10 @@ class TextSizeAdapter(_textSizes: Array<Int>) : RecyclerView.Adapter<TextSizeAda
     }
 
     override fun onBindViewHolder(holder: TextSizeViewHolder, position: Int) {
-        holder.textView.text = textSizes[position].toString()
-        holder.textView.textSize = textSizes[position].toFloat()
+        holder.textView.apply {
+            text = textSizes[position].toString()
+            textSize = textSizes[position].toFloat()
+        }
     }
 
 
