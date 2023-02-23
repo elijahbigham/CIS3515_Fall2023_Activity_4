@@ -1,5 +1,6 @@
 package edu.temple.activity4
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -7,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
+const val FONT_DESC = "FONT_SIZE"
 class MainActivity : AppCompatActivity() {
 
     lateinit var textSizeSelector: RecyclerView
@@ -28,7 +29,8 @@ class MainActivity : AppCompatActivity() {
         val textSizes = Array(20){(it + 1) * 5}
 
         textSizeSelector.adapter = TextSizeAdapter(textSizes){
-            textSizeDisplay.textSize = it
+            startActivity(Intent(this, Secondary::class.java).putExtra(FONT_DESC, it))
+
 
         }
         textSizeSelector.layoutManager = LinearLayoutManager(this)
